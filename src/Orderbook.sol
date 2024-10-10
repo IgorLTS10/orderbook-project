@@ -10,8 +10,8 @@ contract Orderbook {
         address user;
         uint256 amount;
         uint256 price;
-        bool isBuyOrder; // true = buy order, false = sell order
-        bool isActive; // true if the order is active, false if cancelled
+        bool isBuyOrder; 
+        bool isActive; 
     }
 
     TokenA public tokenA;
@@ -38,7 +38,7 @@ contract Orderbook {
         // Vérifier que l'ordre actuel est un ordre d'achat valide
         if (!buyOrder.isBuyOrder || buyOrder.amount == 0) {
             i++;
-            continue; // Passer à l'ordre suivant
+            continue; 
         }
 
         uint256 j = 0;
@@ -48,7 +48,7 @@ contract Orderbook {
             // Vérifier que l'ordre actuel est un ordre de vente valide
             if (sellOrder.isBuyOrder || sellOrder.amount == 0 || sellOrder.price > buyOrder.price) {
                 j++;
-                continue; // Passer à l'ordre suivant
+                continue; 
             }
 
             uint256 matchedAmount = buyOrder.amount < sellOrder.amount ? buyOrder.amount : sellOrder.amount;
@@ -58,8 +58,8 @@ contract Orderbook {
             require(tokenB.allowance(buyOrder.user, address(this)) >= matchedAmount * sellOrder.price, "Insufficient allowance for TokenB");
 
             // Effectuer l'échange de tokens
-            tokenA.transferFrom(sellOrder.user, buyOrder.user, matchedAmount); // Transfert de TokenA du vendeur vers l'acheteur
-            tokenB.transferFrom(buyOrder.user, sellOrder.user, matchedAmount * sellOrder.price); // Transfert de TokenB de l'acheteur vers le vendeur
+            tokenA.transferFrom(sellOrder.user, buyOrder.user, matchedAmount); 
+            tokenB.transferFrom(buyOrder.user, sellOrder.user, matchedAmount * sellOrder.price); 
 
             // Mise à jour des quantités des ordres
             buyOrder.amount -= matchedAmount;
@@ -67,12 +67,12 @@ contract Orderbook {
 
             // Supprimer les ordres exécutés
             if (buyOrder.amount == 0) {
-                delete orders[i]; // Supprime complètement l'ordre d'achat s'il est exécuté
-                break; // Sortir de la boucle interne car l'ordre d'achat est rempli
+                delete orders[i]; 
+                break; 
             }
 
             if (sellOrder.amount == 0) {
-                delete orders[j]; // Supprime complètement l'ordre de vente s'il est exécuté
+                delete orders[j]; 
             }
 
             j++;
@@ -88,7 +88,7 @@ contract Orderbook {
         require(order.user == msg.sender, "You can only cancel your own orders");
         require(order.isActive, "Order already cancelled");
 
-        order.isActive = false; // Annuler l'ordre
+        order.isActive = false; 
     }
 
     function getOrder(uint256 orderId) public view returns (Order memory) {
